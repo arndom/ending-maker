@@ -2,6 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
+
 body::before {
 	--line: hsl(0 0% 5% / 0.25);
 	--size: 60px;
@@ -17,6 +18,20 @@ body::before {
 	z-index: -1;
 }
 
+::selection {
+  background-color: rgba(124, 58, 237, 0.15);
+}
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+	display: none;
+}
+
+body {
+	-ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}
+
 .navbar > svg {
 	width: 64px;
 	height: 64px
@@ -29,3 +44,18 @@ body::before {
 section {
 	height: 100vh;
 }
+
+.slick-slide {
+	transform: scale(0.9);
+	transition: transform 500ms;
+}
+
+.slick-current {
+	transform: scale(1.1);
+}
+
+.backdrop  {
+	-webkit-tap-highlight-color: transparent;
+}
+
+
