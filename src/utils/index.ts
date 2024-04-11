@@ -3,14 +3,14 @@ export interface AlternateEnding  {
   content: string;
 }
 
-interface Ending extends AlternateEnding {
+export interface Ending extends AlternateEnding {
   image: string;
 }
 
 export function extractAlternateEndings(text: string): AlternateEnding[] {
   const endings: AlternateEnding[] = [];
 
-  const regex = /Title: "(.*?)".*?((?:(?!Title:).)*)/gs;
+  const regex = /Title: ?"?([^"\n]+)"?\n((?:(?!Title:)[\s\S])*)/g;
   let match;
   while (match = regex.exec(text)) {
       const [, title, content] = match;
@@ -20,7 +20,6 @@ export function extractAlternateEndings(text: string): AlternateEnding[] {
   return endings;
 }
 
-// Your async function to fetch images
 async function fetchImage(title: string, summary: string): Promise<string> {
   try {
     const prompt = `create an image that fits this show title ${title} with this as a summary of it ${summary}`

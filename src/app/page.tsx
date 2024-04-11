@@ -11,10 +11,19 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import Image from 'next/image';
+import { Ending } from '@/utils';
+import axios from 'axios';
+import Progress from '@/components/progress';
 
 export default function Home() {
   const [selected, setSelected] = React.useState<null | number>(null);
   const sliderRef = React.useRef<Slider | null>(null);
+  const [input, setInput] = React.useState("");
+  const [inputError, setInpuError] =React. useState('');
+  const [data, setData] = React.useState<Ending[]>([]);
+  const [loading, setLoading] = React.useState(false);
+
+  const isError = inputError.replace(/\s/g, '').length !== 0;
 
   const handleOpen = (index: number) => {
     setSelected(index)
@@ -71,14 +80,49 @@ export default function Home() {
     ]
   };
 
-  const scrollIntoView = () => {
-    const target = document.getElementById("generated");
-    if (target) target.scrollIntoView({ behavior: "smooth" });
-  }
-
   const changeSlide = (index: number) => {
     sliderRef.current?.slickGoTo(index);
   }
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setInput(String(e.target.value))
+  }
+
+  const handleInputSubmit = async () => {
+    setInpuError('');
+    setData([]);
+    setLoading(true);
+
+    await axios
+    .post(`/api/gen`, { prompt: input.trimEnd() })
+    .then((res) => {
+      console.log(res.data)
+      if (Array.from(res.data).length === 5) {
+        setData(res.data);
+      } else {
+        setInpuError('Sorry, something went wrong');
+      }
+
+      setLoading(false);
+    })
+    .catch((error) => {
+      console.log('failed to fetch');
+      console.log(error);
+      setInpuError('Sorry, an error occured, check console');
+      setLoading(false);
+    });
+  }
+
+  React.useEffect(() => {
+    const scrollIntoView = () => {
+      const target = document.getElementById("generated");
+      if (target) target.scrollIntoView({ behavior: "smooth" });
+    }
+
+    if (data.length === 5) {
+      scrollIntoView();
+    }
+  }, [data.length])
 
   return (
     <main className="min-h-screen m-auto px-8 pb-8">
@@ -105,24 +149,42 @@ export default function Home() {
           </span>
         </h1>
 
-        <div className="flex items-center justify-center flex-wrap gap-4">
-          <AppInput placeholder="Game of Thrones S8..." />
-          <AppButton onClick={scrollIntoView}>Generate</AppButton>
+        <div className="flex items-start justify-center flex-wrap gap-4">
+          <div className='flex flex-col items-center'>
+            <AppInput
+              placeholder="Game of Thrones"
+              value={input}
+              onChange={handleInputChange}
+            />
+
+            {isError && (
+              <p className='text-red-600 text-sm mt-2'>
+                {inputError}
+              </p>
+            )}
+          </div>
+
+          {!loading && (
+            <AppButton
+              disabled={input.replace(/\s/g, "").length === 0}
+              onClick={handleInputSubmit}
+            >
+              Generate
+            </AppButton>
+          )}
+
+          {loading && <Progress />}
         </div>
       </section>
 
-      <section
-        id="generated"
-        className="flex items-center justify-center overflow-hidden -mx-8"
-      >
-        <div className="min-w-0">
-          <Slider
-              {...sliderSettings}
-            ref={sliderRef}
-          >
-            {Array.from({ length: 5 })
-              .fill(0)
-              .map((item, ind) => {
+      {Boolean(data.length) && (
+        <section
+          id="generated"
+          className="flex items-center justify-center overflow-hidden -mx-8"
+        >
+          <div className="min-w-0">
+            <Slider {...sliderSettings} ref={sliderRef}>
+              {data.map((item, ind) => {
                 const isSelected = ind === selected;
 
                 return (
@@ -132,11 +194,11 @@ export default function Home() {
                     onClick={() => changeSlide(ind)}
                   >
                     <Image
-                      src={"blob:b6157151-0e33-4938-a519-710282ec89dc"}
+                      src={item.image}
                       alt="ses"
                       width={0}
                       height={0}
-                      className="bg-purple-500 w-[400px] h-[300px] rounded-2xl"
+                      className="bg-purple-500 w-[400px] h-[300px] rounded-2xl object-cover object-top"
                     />
 
                     <div
@@ -144,11 +206,11 @@ export default function Home() {
                         isSelected ? "300px" : "175px"
                       }] px-10 py-12 rounded-2xl -mt-[88px] shadow-[0_10px_10px_0px_rgba(0,0,0,0.1)] overflow-y-auto`}
                     >
-                      <p className="text-sm mb-1 font-semibold text-slate-500">
-                        Game of Thrones S{ind}
+                      <p className="text-sm mb-1 font-semibold text-slate-500 capitalize">
+                        {input}
                       </p>
                       <p className="text-2xl font-semibold mb-4 capitalize">
-                        Path to destruction
+                        {item.title}
                       </p>
                       {!isSelected && (
                         <button
@@ -162,13 +224,7 @@ export default function Home() {
 
                       {isSelected && (
                         <div>
-                          <p>
-                            Lorem ipsum dolor sit amet consectetur adipisicing
-                            elit. Reprehenderit eveniet possimus reiciendis
-                            perferendis? Quibusdam nulla exercitationem amet
-                            nisi, labore, consequuntur vel ducimus, perferendis
-                            in ipsum pariatur fugit sapiente repellendus eius!
-                          </p>
+                          <p>{item.content}</p>
 
                           <button
                             type="button"
@@ -183,9 +239,10 @@ export default function Home() {
                   </div>
                 );
               })}
-          </Slider>
-        </div>
-      </section>
+            </Slider>
+          </div>
+        </section>
+      )}
     </main>
   );
 }

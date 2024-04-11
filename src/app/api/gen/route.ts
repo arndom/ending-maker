@@ -36,6 +36,7 @@ export async function POST(request: NextRequest) {
 
     // @ts-ignore
     if (!data.success) {
+      // @ts-ignore
       console.log("An error occurred:", data.errors);
       return new NextResponse("Service unavailable", { status: 503 })
     }
