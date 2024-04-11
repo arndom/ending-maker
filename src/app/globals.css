@@ -54,6 +54,15 @@ section {
 	transform: scale(1.1);
 }
 
+@media only screen and (max-width: 640px) {
+	.mapped-slide {
+		width: unset !important;
+	}
+	.slick-current {
+		transform: scale(0.9);
+	}
+}
+
 .backdrop  {
 	-webkit-tap-highlight-color: transparent;
 }

@@ -39,7 +39,7 @@ export default function Home() {
     dots: true,
     arrrows: false,
     infinite: true,
-    autoplay: true,
+    autoplay: false,
     autoplaySpeed: 3000,
     speed: 500, // animation speed
     variableWidth: true,
@@ -190,7 +190,7 @@ export default function Home() {
                 return (
                   <div
                     key={ind}
-                    className="!flex flex-col items-center mx-6 py-10 cursor-pointer"
+                    className="!flex flex-col items-center mx-6 py-10 cursor-pointer mapped-slide"
                     onClick={() => changeSlide(ind)}
                   >
                     <Image
