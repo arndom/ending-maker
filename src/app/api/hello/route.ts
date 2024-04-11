@@ -1,4 +1,4 @@
-import type { NextRequest } from 'next/server'
+import { NextResponse, type NextRequest } from 'next/server'
 import { getRequestContext } from '@cloudflare/next-on-pages'
 
 export const runtime = 'edge'
@@ -6,17 +6,29 @@ export const runtime = 'edge'
 export async function GET(request: NextRequest) {
   let responseText = 'Hello World'
 
-  // In the edge runtime you can use Bindings that are available in your application
-  // (for more details see:
-  //    - https://developers.cloudflare.com/pages/framework-guides/deploy-a-nextjs-site/#use-bindings-in-your-nextjs-application
-  //    - https://developers.cloudflare.com/pages/functions/bindings/
-  // )
-  //
-  // KV Example:
-  // const myKv = getRequestContext().env.MY_KV_NAMESPACE
-  // await myKv.put('suffix', ' from a KV store!')
-  // const suffix = await myKv.get('suffix')
-  // responseText += suffix
+  const messages = [
+    { role: "system", content: "You are a friendly assistant" },
+    {
+      role: "user",
+      content: "What is the origin of the phrase Hello, World",
+    },
+  ];
 
-  return new Response(responseText)
+  const response = await fetch(
+    `https://api.cloudflare.com/client/v4/accounts/${process.env.CLOUDFLARE_ACCOUNT_ID}/ai/run/@cf/meta/llama-2-7b-chat-fp16`,
+    {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.CLOUDFLARE_AUTH_TOKEN}`,
+      },
+      body: JSON.stringify({ messages }),
+    }
+  );
+
+  const data = await response.json();
+  
+  // @ts-ignore
+  return NextResponse.json(data.result.response);
+
+  return new Response(JSON.stringify(response))
 }
