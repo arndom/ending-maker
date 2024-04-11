@@ -10,20 +10,18 @@ import Slider from "react-slick";
 
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import Image from 'next/image';
 
 export default function Home() {
   const [selected, setSelected] = React.useState<null | number>(null);
-  const [open, setOpen] = React.useState(false);
   const sliderRef = React.useRef<Slider | null>(null);
 
   const handleOpen = (index: number) => {
-    setOpen(true)
     setSelected(index)
   };
 
   const handleClose = () => {
     setSelected(null);
-    setOpen(false);
   }
 
   const sliderSettings = {
@@ -38,7 +36,7 @@ export default function Home() {
     variableWidth: true,
     adaptiveHeight: true,
     slidesToShow: 4,
-    slidesToScroll: 4,
+    slidesToScroll: 1,
     pauseOnHover: true,
     afterChange: () => handleClose(),
     responsive: [
@@ -46,21 +44,21 @@ export default function Home() {
         breakpoint: 1536,
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 3,
+          slidesToScroll: 1,
         }
       },
       {
         breakpoint: 1280,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToScroll: 1,
         }
       },
       {
         breakpoint: 1024,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 2,
+          slidesToScroll: 1,
         }
       },
       {
@@ -133,7 +131,13 @@ export default function Home() {
                     className="!flex flex-col items-center mx-6 py-10 cursor-pointer"
                     onClick={() => changeSlide(ind)}
                   >
-                    <div className="bg-purple-500 w-[400px] h-[300px] rounded-2xl" />
+                    <Image
+                      src={"blob:b6157151-0e33-4938-a519-710282ec89dc"}
+                      alt="ses"
+                      width={0}
+                      height={0}
+                      className="bg-purple-500 w-[400px] h-[300px] rounded-2xl"
+                    />
 
                     <div
                       className={`bg-white w-[350px] h-[${
