@@ -130,6 +130,13 @@ export default function Home() {
         <Logo />
       </div>
 
+      <div className="footer fixed bottom-2 right-2  w-full p-4 z-10">
+        <div className='flex gap-4 justify-end text-pink-500 font-bold cursor-pointer'>
+          <a href='https://developers.cloudflare.com/workers-ai/' target='__blank'>Cloudfare 💫</a>
+          <a href='https://github.com/arndom/ending-maker' target='__blank'>Github 🌟</a>
+        </div>
+      </div>
+
       <section className="flex flex-col items-center justify-center gap-4">
         <h1 className="max-w-5xl font-extrabold text-xl sm:text-5xl lg:text-6xl text-center w-[100%] lg:[w-75%]">
           <span className="-mb-1 lg:-mb-4 block uppercase bold text-base lg:text-lg opacity-45">
@@ -190,7 +197,7 @@ export default function Home() {
                 return (
                   <div
                     key={ind}
-                    className="!flex flex-col items-center mx-6 py-10 cursor-pointer mapped-slide"
+                    className="!flex flex-col items-center mx-6 py-5 lg:py-10 cursor-pointer mapped-slide"
                     onClick={() => changeSlide(ind)}
                   >
                     <Image

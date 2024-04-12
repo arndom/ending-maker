@@ -58,8 +58,11 @@ section {
 	.mapped-slide {
 		width: unset !important;
 	}
+	.slick-slide {
+		transform: scale(0.8);
+	}
 	.slick-current {
-		transform: scale(0.9);
+		transform: scale(0.8);
 	}
 }
 
